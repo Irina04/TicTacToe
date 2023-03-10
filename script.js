@@ -1,12 +1,15 @@
 var clicks = 0, wins = 0;
 var mat = [ ];
+
+document.onload = game();
+
 for(var i = 1; i <= 3; ++i) {
     mat[i] = [ ];
     for(var j = 1; j <= 3; ++j) {
         mat[i][j] = 0; 
     }
 }
-document.onload = game();
+
 function game() {
     for (let i = 1; i <= 3; ++i) {
         for (let j = 1; j <= 3; ++j) {
@@ -23,6 +26,7 @@ function game() {
         }
     } 
 }
+
 function addContent(elem) {
     if (clicks % 2 == 0 && document.getElementById(elem.id).innerHTML == "" && wins == 0) {
          document.getElementById(elem.id).innerHTML = 'X';
@@ -110,6 +114,7 @@ function addContent(elem) {
          });
      }
 }
+
 function playAgain() {
     location.reload();
 }
