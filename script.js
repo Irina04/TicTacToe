@@ -15,7 +15,6 @@ function game() {
         for (let j = 1; j <= 3; ++j) {
             let newElem1 =  document.createElement("h2");
             let newContent1 = document.createTextNode("");
-    
             newElem1.appendChild(newContent1);
             newElem1.id = i * 10 + j;    
             let currentElement1 = document.getElementById("TicTacToe");
