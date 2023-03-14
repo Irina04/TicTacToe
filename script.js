@@ -1,120 +1,111 @@
-var clicks = 0, wins = 0;
-var mat = [ ];
+let words =["ANANAS", "MASA", "STERNOCLEIDOMASTOIDIAN", "CARAMIDA", "BOTOSANI", "XILOFON", 
+"KILOCALORIE", "ZARZAVAT", "VOLKSWAGEN", "ANANAS", "MASA", "ELECTROCORTICOGRAFIE", "ALGORITM", "CLAUSTROFOBIE"];
+let randomWord = words[Math.floor(Math.random()*words.length)];
+let cards = document.querySelectorAll(".card-body");
+let word = "", hang = 0, countLetters = 0;
 
-document.onload = game();
+const canvas = document.getElementById('a');
+const ctx = canvas.getContext('2d');
+ctx.strokeStyle = 'black';
+ctx.beginPath();
+ctx.moveTo(100,140);
+ctx.lineTo(100,50);
+ctx.lineTo(130,50);
+ctx.lineTo(130,60);
+ctx.stroke();
 
-for(var i = 1; i <= 3; ++i) {
-    mat[i] = [ ];
-    for(var j = 1; j <= 3; ++j) {
-        mat[i][j] = 0; 
+for (let i = 0; i < randomWord.length; ++i) {
+    word += "_ ";   
+}
+
+document.body.onload = addAlphabet();
+document.body.onload = addWordForGuess();
+
+function addWordForGuess() {
+    const newElem = document.createElement("h3");
+    const newContent = document.createTextNode(word);
+    newElem.appendChild(newContent);
+    const currentElem = document.getElementById("guess");
+    currentElem.appendChild(newElem);
+}
+
+function addAlphabet() {
+    for (let i = 65; i <= 90; ++i) {
+        const newElem = document.createElement("button");
+        const newContent = document.createTextNode(String.fromCharCode(i));
+        let letter = String.fromCharCode(i);
+        newElem.appendChild(newContent);
+        const currentElem = document.getElementById("alphabet");
+        currentElem.appendChild(newElem);
+        newElem.onclick = function() {
+            fillLetter(newElem , letter, i);
+        }
     }
 }
 
-function game() {
-    for (let i = 1; i <= 3; ++i) {
-        for (let j = 1; j <= 3; ++j) {
-            let newElem1 =  document.createElement("h2");
-            let newContent1 = document.createTextNode("");
-    
-            newElem1.appendChild(newContent1);
-            newElem1.id = i * 10 + j;    
-            let currentElement1 = document.getElementById("noIdea1");
-            currentElement1.appendChild(newElem1);
-            newElem1.onclick = function() {
-                addContent(newElem1);
-            }   
-        }
+function fillLetter(element, pressedletter, index) {
+    let found = 0;
+    for (let j = 0; j < randomWord.length; ++j) {
+        if (pressedletter == randomWord[j]) {
+            element.style.background = 'lime';
+            word = word.substring(0, j * 2) + pressedletter + word.substring(j * 2 + 1, word.length);          
+            document.querySelector("h3").textContent = word; 
+            console.log(word);
+            ++countLetters;
+            if (countLetters == randomWord.length) {
+                const dialog = document.getElementById("winningdialog");
+                const playbtn = document.getElementById("refreshgame");
+                dialog.show(); 
+                playbtn.addEventListener('click', function playagain(){
+                    location.reload();
+                });
+            }
+            found = 1;
+        } 
     } 
+    if (found == 0 && pressedletter != randomWord[index]) {
+        element.style.background = 'red';
+        ++hang;
+        draw();
+    }
 }
 
-function addContent(elem) {
-    if (clicks % 2 == 0 && document.getElementById(elem.id).innerHTML == "" && wins == 0) {
-         document.getElementById(elem.id).innerHTML = 'X';
-         mat[Math.floor(elem.id / 10)][Math.floor(elem.id% 10)] = '1';
-         ++clicks;
-         if (clicks <= 9 && wins == 0) {
-             if((mat[1][1] == mat[1][2]) && (mat[1][2] == mat[1][3]) && (mat[1][3] == 1)) {
-                 alert ("X wins");
-                 wins = 1;
-             }
-             if ((mat[1][1] == mat[2][1]) && (mat[2][1] == mat[3][1]) && (mat[3][1] == 1)) {
-                 alert ("X wins");
-                 wins = 1;
-             }
-             if ((mat[1][1] == mat[2][2]) && (mat[2][2] == mat[3][3]) && (mat[3][3] == 1)) {
-                 alert("X wins");
-                 wins = 1;
-             }
-             if ((mat[2][1] == mat[2][2]) && (mat[2][2] == mat[2][3]) && (mat[2][3] == 1)) {
-                 alert("X wins");
-                 wins = 1;
-             }   
-             if ((mat[1][3] == mat[2][3]) && (mat[2][3] == mat[3][3]) && (mat[3][3]) == 1) {
-                 alert("X wins");
-                 wins = 1;
-             }
-             if ((mat[1][3] == mat[2][2]) && (mat[2][2] == mat[3][1]) && (mat[3][1] == 1)) {
-                 alert("X wins");
-                 wins = 1;
-             }
-             if ((mat[2][1] == mat[2][2]) && (mat[2][2] == mat[2][3]) && (mat[2][3] == 1)) {
-                 alert("X wins");
-                 wins = 1;
-             }
-             if ((mat[3][1] == mat[3][2]) && (mat[3][2] == mat[3][3]) && (mat[3][3] == 1)){
-                 alert("X wins");
-                 wins = 1;
-             } 
-         }         
-     } else if (clicks % 2 != 0 && document.getElementById(elem.id).innerHTML == "" && wins == 0){
-         document.getElementById(elem.id).innerHTML = '0';
-         mat[Math.floor(elem.id/ 10)][Math.floor(elem.id % 10)] = '2';
-         ++clicks;
-         if (clicks <= 9 && wins == 0) {
-             if((mat[1][1] == mat[1][2]) && (mat[1][2] == mat[1][3]) && (mat[1][3] == 2)) {
-                 alert ("0 wins");  
-                 wins = 1;
-             }
-             if ((mat[1][1] == mat[2][1]) && (mat[2][1] == mat[3][1]) && (mat[3][1] == 2)) {
-                 alert ("0 wins");
-                 wins = 1;
-             }
-             if ((mat[1][1] == mat[2][2]) && (mat[2][2] == mat[3][3]) && (mat[3][3] == 2)) {
-                     alert("0 wins");
-                     wins = 1;
-             }
-             if ((mat[2][1] == mat[2][2]) && (mat[2][2] == mat[2][3]) && (mat[2][3] == 2)) {
-                 alert("0 wins");
-                 wins = 1;
-             }
-             if ((mat[1][3] == mat[2][3]) && (mat[2][3] == mat[3][3]) && (mat[3][3]) == 2) {
-                 alert("0 wins");
-                 wins = 1;
-             }
-             if ((mat[1][3] == mat[2][2]) && (mat[2][2] == mat[3][1]) && (mat[3][1] == 2)) {
-                 alert("0 wins");
-                 wins = 1;
-             }
-             if ((mat[2][1] == mat[2][2]) && (mat[2][2] == mat[2][3]) && (mat[2][3] == 2)) {
-                     alert("0 wins");
-                     wins = 1;
-             }
-             if ((mat[3][1] == mat[3][2]) && (mat[3][2] == mat[3][3]) && (mat[3][3] == 2)){
-                 alert("0 wins");
-                 wins = 1;
-             }
-         }  
-     } 
-     if (clicks == 9 && wins == 0) {
-         const dialog = document.getElementById("drawdialog");
-         const playbtn = document.getElementById("refreshgame");
-         dialog.show();
-         playbtn.addEventListener('click', function playagain(){
-             location.reload();
-         });
-     }
-}
-
-function playAgain() {
-    location.reload();
+function draw() {
+    if (hang == 1) {
+        const radius = 10;
+        ctx.beginPath();
+        ctx.arc(130, 70, radius, 0, 2 * Math.PI,false);
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+    }
+    if (hang == 2) {
+        ctx.moveTo(130,80);
+        ctx.lineTo(130,115);
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+    }
+    if (hang == 3) {
+        ctx.moveTo(130,80);
+        ctx.lineTo(120,95);
+        ctx.stroke();
+    }
+    if (hang == 4) {
+        ctx.moveTo(130,80);
+        ctx.lineTo(140,95);
+        ctx.stroke();
+    }
+    if (hang == 5) {
+        ctx.moveTo(130,115);
+        ctx.lineTo(120,130);
+        ctx.stroke();
+    }
+    if (hang == 6) {
+        ctx.moveTo(130,115);
+        ctx.lineTo(140,130);
+        ctx.stroke();
+        alert("You lost");
+        document.querySelector("h3").style.color = 'red';
+        document.querySelector("h3").textContent = randomWord;
+        
+    }
 }
